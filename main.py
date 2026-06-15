@@ -171,12 +171,16 @@ class JmComicPlugin(Star):
         if proxy:
             meta_data["proxies"] = proxy
 
+        # 章节并发数：必须是具体整数。jmcomic 库默认 photo=None，
+        # 但 jm_downloader.execute_on_condition 会执行 `count_batch >= count_real`，
+        # None 参与比较会在 Python 3.12 抛 TypeError，故这里显式给整数绕开该 bug。
+        photo_batch = self._int_cfg("photo_batch", 8)
         option_dict = {
             "dir_rule": {"rule": "Bd_Atitle", "base_dir": task_dir},
             "download": {
                 "cache": True,
                 "image": {"decode": True, "suffix": suffix or None},
-                "threading": {"image": 30, "photo": None},
+                "threading": {"image": 30, "photo": max(1, photo_batch)},
             },
             "client": {
                 "domain": [],

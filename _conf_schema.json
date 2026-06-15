@@ -73,5 +73,11 @@
     "type": "int",
     "default": 2,
     "hint": "防止同时下载过多导致风控；超过会排队"
+  },
+  "photo_batch": {
+    "description": "单本子内同时下载的章节数",
+    "type": "int",
+    "default": 8,
+    "hint": "必须为正整数；不要留空（库内部会因 None 比较报错）"
   }
 }
