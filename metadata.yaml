@@ -1,0 +1,6 @@
+name: astrbot_plugin_jmcomic
+desc: 禁漫天堂(JM)本子下载插件，支持下载为 PDF / ZIP(可加密) 并发回，支持搜索车号与排行榜
+display_name: JMComic 下载
+author: hect0x7 / adapted-for-astrbot
+version: 1.0.0
+repo: https://github.com/hect0x7/JMComic-Crawler-Python

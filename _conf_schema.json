@@ -1,0 +1,77 @@
+{
+  "default_format": {
+    "description": "默认产物格式（不指定指令时使用）",
+    "type": "string",
+    "options": ["pdf", "zip"],
+    "default": "pdf",
+    "hint": "用户直接发 /jm <车号> 时生成的格式"
+  },
+  "download_dir": {
+    "description": "下载临时目录（留空则使用插件 data 目录下的 jmcomic_download）",
+    "type": "string",
+    "default": "",
+    "hint": "图片/产物的存放目录，每次任务结束会自动清理"
+  },
+  "client_impl": {
+    "description": "客户端实现",
+    "type": "string",
+    "options": ["api", "html"],
+    "default": "api",
+    "hint": "api=移动端(不限ip兼容好)，html=网页端(限ip地区但效率高)"
+  },
+  "image_suffix": {
+    "description": "图片格式转换（影响生成的 PDF/ZIP 内图片）",
+    "type": "string",
+    "options": ["", ".jpg", ".png", ".webp"],
+    "default": "",
+    "hint": "留空表示不转换，保持原格式"
+  },
+  "zip_encrypt": {
+    "description": "ZIP 是否加密",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后生成的 zip 需要密码解压（依赖 pyzipper）"
+  },
+  "zip_password": {
+    "description": "ZIP 加密密码",
+    "type": "string",
+    "default": "",
+    "hint": "zip_encrypt 开启且此项非空时使用；留空则自动生成随机密码并在消息中告知"
+  },
+  "pdf_encrypt": {
+    "description": "PDF 是否加密",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后生成的 pdf 需要密码打开（依赖 pikepdf）"
+  },
+  "pdf_password": {
+    "description": "PDF 加密密码",
+    "type": "string",
+    "default": "",
+    "hint": "pdf_encrypt 开启时使用"
+  },
+  "proxy": {
+    "description": "网络代理（留空表示系统默认/不使用）",
+    "type": "string",
+    "default": "",
+    "hint": "例如 http://127.0.0.1:7890"
+  },
+  "search_limit": {
+    "description": "搜索结果返回条数上限",
+    "type": "int",
+    "default": 10,
+    "hint": "/jm search 返回的最大条目数"
+  },
+  "download_timeout": {
+    "description": "单次下载超时（秒）",
+    "type": "int",
+    "default": 300,
+    "hint": "超过该时间未完成则放弃并提示失败"
+  },
+  "max_concurrent": {
+    "description": "同时处理的下载任务数上限",
+    "type": "int",
+    "default": 2,
+    "hint": "防止同时下载过多导致风控；超过会排队"
+  }
+}

@@ -1,0 +1,11 @@
+# 核心库：禁漫天堂下载 API
+jmcomic>=2.7.0
+
+# PDF 合并（jm `img2pdf` 插件依赖）
+img2pdf
+
+# PDF 加密（可选，配置加密 PDF 时需要）
+pikepdf
+
+# ZIP AES 加密（可选，配置加密 ZIP 时需要）
+pyzipper
