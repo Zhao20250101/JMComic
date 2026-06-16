@@ -1,6 +1,6 @@
 # astrbot_plugin_jmcomic
 
-> 📌 **声明**：本插件为二次修改版本，基于原项目 [hect0x7/JMComic-Crawler-Python](https://github.com/hect0x7/JMComic-Crawler-Python) 修改而来。核心下载能力与版权归原作者所有，本仓库仅在其基础上做了 AstrBot 适配与若干修复。如有侵权请联系删除。
+> 📌 **声明**：本插件基于原项目 [hect0x7/JMComic-Crawler-Python](https://github.com/hect0x7/JMComic-Crawler-Python)（`jmcomic` 库）**封装/调用**而成——下载、解密等核心能力均由 `jmcomic` 库提供（通过 `requirements.txt` 安装），本仓库只是在其之上编写了 AstrBot 适配层（指令处理、打包发送等胶水逻辑）。核心能力与版权归原作者所有，如有侵权请联系删除。
 
 基于 [JMComic-Crawler-Python](https://github.com/hect0x7/JMComic-Crawler-Python)（`jmcomic` 库）封装的 [AstrBot](https://astrbot.app) 插件，让机器人可以直接下载禁漫天堂(JM)本子，并以 **PDF** 或 **ZIP（可加密）** 的形式发回聊天。
 
@@ -113,4 +113,4 @@ ENOENT: no such file or directory, open
 
 ## 致谢
 
-- 本插件基于 [hect0x7/JMComic-Crawler-Python](https://github.com/hect0x7/JMComic-Crawler-Python) 修改而来，核心下载能力来自该项目。
+- 本插件基于 [hect0x7/JMComic-Crawler-Python](https://github.com/hect0x7/JMComic-Crawler-Python)（`jmcomic` 库）封装而成，核心下载能力来自该项目。
