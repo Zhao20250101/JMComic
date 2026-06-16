@@ -79,5 +79,11 @@
     "type": "int",
     "default": 8,
     "hint": "必须为正整数；不要留空（库内部会因 None 比较报错）"
+  },
+  "send_as_forward": {
+    "description": "以「聊天记录（合并转发）」形式发回下载结果",
+    "type": "bool",
+    "default": true,
+    "hint": "开启后产物文件包进合并转发卡片（点开才显示），关闭则直接发文件"
   }
 }

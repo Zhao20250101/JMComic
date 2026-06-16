@@ -129,7 +129,6 @@ class JmComicPlugin(Star):
             caption = f"✅ JM{album_id} 《{title}》 下载完成"
             if extra_msg:
                 caption += f"\n{extra_msg}"
-            yield event.plain_result(caption)
 
             # 发送文件前先 copy 一份到持久目录，避免框架还没读到就被 finally 删掉
             persist_dir = os.path.join(self.download_root, "pending")
@@ -141,10 +140,17 @@ class JmComicPlugin(Star):
                 logger.warning("[jmcomic] copy 产物失败，改用原路径: %s", e)
                 persist_path = out_path
 
+            file_comp = Comp.File(file=persist_path, name=file_name)
+
             try:
-                yield event.chain_result(
-                    [Comp.File(file=persist_path, name=file_name)]
-                )
+                if self._bool_cfg("send_as_forward", True):
+                    # 以「聊天记录（合并转发）」形式发回：标题与文件各为一个节点
+                    yield event.chain_result(
+                        self._build_forward(event, caption, file_comp)
+                    )
+                else:
+                    yield event.plain_result(caption)
+                    yield event.chain_result([file_comp])
             finally:
                 # 延迟清理：给框架充分时间读完文件
                 self._safe_rmtree(task_dir)
@@ -372,6 +378,23 @@ class JmComicPlugin(Star):
     # ------------------------------------------------------------------ #
     # 工具
     # ------------------------------------------------------------------ #
+    def _build_forward(self, event: AstrMessageEvent, caption: str, file_comp):
+        """把下载结果包装成「聊天记录（合并转发）」节点列表。
+
+        返回的 chain 由若干 Comp.Node 组成，每个 Node 是合并转发里的一条消息。
+        发送方信息取机器人自身（uin / name），避免暴露真实用户。
+        """
+        try:
+            uin = int(event.get_self_id())
+        except (TypeError, ValueError):
+            uin = 0
+        nickname = "JMComic"
+
+        return [
+            Comp.Node(uin=uin, name=nickname, content=[Comp.Plain(caption)]),
+            Comp.Node(uin=uin, name=nickname, content=[file_comp]),
+        ]
+
     @staticmethod
     def _tail_after(message_str: str, marker: str):
         """从完整消息文本中取出 marker 之后的内容（保留空格），用于多词搜索。"""
@@ -391,8 +414,8 @@ class JmComicPlugin(Star):
         m = re.search(r"\d+", str(text))
         return m.group(0) if m else None
 
-    def _bool_cfg(self, key: str) -> bool:
-        v = self.config.get(key, False)
+    def _bool_cfg(self, key: str, default: bool = False) -> bool:
+        v = self.config.get(key, default)
         if isinstance(v, str):
             return v.strip().lower() in ("1", "true", "yes", "on", "是")
         return bool(v)
