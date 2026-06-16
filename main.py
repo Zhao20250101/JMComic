@@ -131,13 +131,28 @@ class JmComicPlugin(Star):
                 caption += f"\n{extra_msg}"
             yield event.plain_result(caption)
 
+            # 发送文件前先 copy 一份到持久目录，避免框架还没读到就被 finally 删掉
+            persist_dir = os.path.join(self.download_root, "pending")
+            os.makedirs(persist_dir, exist_ok=True)
+            persist_path = os.path.join(persist_dir, file_name)
+            try:
+                shutil.copy2(out_path, persist_path)
+            except Exception as e:  # noqa: BLE001
+                logger.warning("[jmcomic] copy 产物失败，改用原路径: %s", e)
+                persist_path = out_path
+
             try:
                 yield event.chain_result(
-                    [Comp.File(file=out_path, name=file_name)]
+                    [Comp.File(file=persist_path, name=file_name)]
                 )
             finally:
-                # 发送后清理整个任务目录（含产物）
+                # 延迟清理：给框架充分时间读完文件
                 self._safe_rmtree(task_dir)
+                # 发送后再删 copy（可能框架还在读，所以延迟）
+                try:
+                    os.remove(persist_path)
+                except FileNotFoundError:
+                    pass
 
     def _download_blocking(self, album_id: str, fmt: str, task_dir: str):
         """在线程中执行的同步下载逻辑，返回 (产物路径, 标题, 附加消息)。"""
